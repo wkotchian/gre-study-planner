@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unlock — GRE Study Plan Generator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body class="unlock-page">
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <div class="brand">
+          <span class="brand-name">Vince Kotchian</span>
+          <span class="brand-tagline">GRE Expert Tutor</span>
+        </div>
+        <nav class="header-nav">
+          <a href="https://vincekotchian.com" target="_blank" rel="noopener">vincekotchian.com</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="unlock-main">
+    <div class="unlock-card">
+
+      <div class="unlock-icon">🔑</div>
+      <h1>Enter Your License Key</h1>
+      <p class="unlock-subtitle">
+        After purchasing, check your email from Gumroad for your license key.
+      </p>
+
+      {% if error %}
+      <div class="unlock-error">{{ error }}</div>
+      {% endif %}
+
+      <form method="POST" action="/unlock">
+        <div class="field">
+          <label for="license_key">License key</label>
+          <input
+            type="text"
+            id="license_key"
+            name="license_key"
+            placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+            required
+          />
+        </div>
+        <button type="submit" class="btn-primary unlock-btn">Unlock My Access</button>
+      </form>
+
+      <div class="unlock-footer">
+        <p>Don't have a license key yet?</p>
+        <a href="https://vincekotchian.gumroad.com" target="_blank" rel="noopener" class="btn-outline-dark">
+          Buy on Gumroad →
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© Vince Kotchian · <a href="https://vincekotchian.com" target="_blank" rel="noopener">vincekotchian.com</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>

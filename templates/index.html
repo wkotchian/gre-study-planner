@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GRE Study Plan Generator — Vince Kotchian</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <div class="brand">
+          <span class="brand-name">Vince Kotchian</span>
+          <span class="brand-tagline">GRE Expert Tutor</span>
+        </div>
+        <nav class="header-nav">
+          <a href="https://vincekotchian.com" target="_blank" rel="noopener">vincekotchian.com</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Hero ───────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="container">
+      <h1 class="hero-title">Get Your Personalized GRE Study Plan</h1>
+      <p class="hero-subtitle">
+        Tell me where you are and where you're headed. I'll generate a
+        week-by-week plan built around your schedule, timeline, and resources.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Form ───────────────────────────────────────────────────────── -->
+  <main class="container">
+    <form id="planForm" action="/generate" method="POST">
+
+      <!-- Section 1: About You -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-num">1</span>
+          <h2>About You</h2>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <label for="name">Your first name <span class="optional">(optional)</span></label>
+            <input type="text" id="name" name="name" placeholder="e.g. Sarah" autocomplete="given-name" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Your Current Scores -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-num">2</span>
+          <h2>Your Current Situation</h2>
+        </div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field">
+              <label for="current_verbal">Current Verbal score</label>
+              <select id="current_verbal" name="current_verbal">
+                <option value="untested">Haven't tested yet</option>
+                {% for score in range(130, 171) %}
+                <option value="{{ score }}">{{ score }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label for="current_quant">Current Quant score</label>
+              <select id="current_quant" name="current_quant">
+                <option value="untested">Haven't tested yet</option>
+                {% for score in range(130, 171) %}
+                <option value="{{ score }}">{{ score }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Your Goal -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-num">3</span>
+          <h2>Your Target Scores</h2>
+        </div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field">
+              <label for="target_verbal">Target Verbal score</label>
+              <select id="target_verbal" name="target_verbal">
+                {% for score in range(130, 171) %}
+                <option value="{{ score }}" {% if score == 160 %}selected{% endif %}>{{ score }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label for="target_quant">Target Quant score</label>
+              <select id="target_quant" name="target_quant">
+                {% for score in range(130, 171) %}
+                <option value="{{ score }}" {% if score == 160 %}selected{% endif %}>{{ score }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="test_date">Test date</label>
+            <input type="date" id="test_date" name="test_date" />
+            <span class="field-hint">Don't know yet? Leave blank and we'll assume 12 weeks.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Your Schedule -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-num">4</span>
+          <h2>Your Schedule</h2>
+        </div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field">
+              <label for="weekday_hours">Weekday hours/day</label>
+              <select id="weekday_hours" name="weekday_hours">
+                {% set hours = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 5.0, 6.0, 7.0, 8.0] %}
+                {% for h in hours %}
+                <option value="{{ h }}" {% if h == 2.0 %}selected{% endif %}>{{ h }} hr{% if h != 1.0 %}s{% endif %}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label for="weekend_hours">Weekend hours/day</label>
+              <select id="weekend_hours" name="weekend_hours">
+                {% set hours = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 5.0, 6.0, 7.0, 8.0] %}
+                {% for h in hours %}
+                <option value="{{ h }}" {% if h == 3.0 %}selected{% endif %}>{{ h }} hr{% if h != 1.0 %}s{% endif %}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: Your Resources -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-num">5</span>
+          <h2>Your Resources</h2>
+        </div>
+        <div class="card-body">
+          <p class="field-label">Which of these do you have access to?</p>
+          <div class="checkbox-grid">
+            <label class="checkbox-item">
+              <input type="checkbox" name="resources" value="ETS Super Power Pack" />
+              <span class="checkbox-label">ETS Super Power Pack</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="resources" value="ETS Big Book" />
+              <span class="checkbox-label">ETS Big Book</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="resources" value="Manhattan 5-lb Book" />
+              <span class="checkbox-label">Manhattan 5-lb Book</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="resources" value="Gregmat (free)" checked />
+              <span class="checkbox-label">Gregmat (free)</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="resources" value="Gregmat (paid subscription)" />
+              <span class="checkbox-label">Gregmat (paid)</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="resources" value="PrepSwift" />
+              <span class="checkbox-label">PrepSwift</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 6: Your Weakness -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-num">6</span>
+          <h2>Your Weaknesses</h2>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <p class="field-label">Where do you most need to improve?</p>
+            <div class="radio-group">
+              <label class="radio-item">
+                <input type="radio" name="primary_weakness" value="verbal" />
+                <span class="radio-label">Verbal — RC, Text Completion, SE</span>
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="primary_weakness" value="quant" />
+                <span class="radio-label">Quant — Math across all types</span>
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="primary_weakness" value="both" checked />
+                <span class="radio-label">Both equally</span>
+              </label>
+            </div>
+          </div>
+          <div class="field">
+            <label for="biggest_challenge">Biggest challenge <span class="optional">(optional)</span></label>
+            <textarea id="biggest_challenge" name="biggest_challenge"
+              rows="3"
+              placeholder="e.g. I freeze up on Reading Comprehension, or I always run out of time on Quant…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="submit-area">
+        <button type="submit" class="btn-primary" id="submitBtn">
+          Generate My Study Plan
+        </button>
+        <p class="submit-note">This usually takes 15–30 seconds.</p>
+      </div>
+
+    </form>
+  </main>
+
+  <!-- ── Loading Overlay ────────────────────────────────────────────── -->
+  <div id="loadingOverlay" class="loading-overlay" hidden>
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <h3>Building your personalized plan…</h3>
+      <p>Vince is reviewing your situation and crafting your week-by-week roadmap. Hang tight — this takes about 20–30 seconds.</p>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© Vince Kotchian · <a href="https://vincekotchian.com" target="_blank" rel="noopener">vincekotchian.com</a></p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('planForm').addEventListener('submit', function () {
+      document.getElementById('loadingOverlay').hidden = false;
+      document.getElementById('submitBtn').disabled = true;
+    });
+  </script>
+
+</body>
+</html>

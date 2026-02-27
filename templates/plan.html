@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your GRE Study Plan — Vince Kotchian</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="plan-page">
+
+  <!-- ── Header ─────────────────────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <div class="brand">
+          <span class="brand-name">Vince Kotchian</span>
+          <span class="brand-tagline">GRE Expert Tutor</span>
+        </div>
+        <nav class="header-nav">
+          <a href="/" class="nav-back">← New Plan</a>
+          <a href="https://vincekotchian.com" target="_blank" rel="noopener">vincekotchian.com</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container plan-container">
+
+    {% if error_message %}
+    <!-- ── Error State ─────────────────────────────────────────────── -->
+    <div class="error-card">
+      <h2>Something went wrong</h2>
+      <p>{{ error_message }}</p>
+      <a href="/" class="btn-primary">← Try Again</a>
+    </div>
+
+    {% else %}
+    <!-- ── Plan Header ─────────────────────────────────────────────── -->
+    <div class="plan-header">
+      <div class="plan-header-text">
+        <h1>
+          {% if name %}
+            {{ name }}'s GRE Study Plan
+          {% else %}
+            Your Personalized GRE Study Plan
+          {% endif %}
+        </h1>
+        <p class="plan-meta">
+          <strong>{{ weeks_available }} week{% if weeks_available != 1 %}s{% endif %}</strong> to test day
+          &nbsp;·&nbsp;
+          Target: <strong>V{{ target_verbal }} / Q{{ target_quant }}</strong>
+        </p>
+      </div>
+      <div class="plan-actions">
+        <button onclick="window.print()" class="btn-secondary" id="printBtn">
+          🖨 Print / Save as PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Generated Plan ─────────────────────────────────────────── -->
+    <article id="planContent" class="plan-body markdown-body">
+      <!-- Rendered by marked.js below -->
+    </article>
+
+    <!-- ── CTA Section ────────────────────────────────────────────── -->
+    <div class="cta-section">
+      <div class="cta-card cta-tutoring">
+        <div class="cta-icon">🎓</div>
+        <h3>Want 1-on-1 coaching?</h3>
+        <p>Work directly with Vince to get targeted feedback on your weakest areas, accountability, and a plan that adapts as you improve.</p>
+        <a href="https://vincekotchian.com/tutoring" target="_blank" rel="noopener" class="btn-primary">
+          Book a Session with Vince
+        </a>
+      </div>
+      <div class="cta-card cta-discord">
+        <div class="cta-icon">💬</div>
+        <h3>Join the free Discord</h3>
+        <p>Daily practice questions, strategy discussions, study partners, and Vince's answers to your questions — all free.</p>
+        <a href="https://vincekotchian.com/discord" target="_blank" rel="noopener" class="btn-outline">
+          Join the Community
+        </a>
+      </div>
+    </div>
+
+    <div class="plan-footer-nav">
+      <a href="/" class="btn-secondary">← Generate a New Plan</a>
+    </div>
+    {% endif %}
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© Vince Kotchian · <a href="https://vincekotchian.com" target="_blank" rel="noopener">vincekotchian.com</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Render markdown into #planContent
+    const raw = {{ plan_markdown | tojson }};
+    if (raw) {
+      marked.setOptions({ breaks: true, gfm: true });
+      document.getElementById('planContent').innerHTML = marked.parse(raw);
+    }
+  </script>
+
+</body>
+</html>
